@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  patientmedicapi:
+    image: ${DOCKER_REGISTRY-}patientmedicapi
+    build:
+      context: .
+      dockerfile: PatientMedicAPI/Dockerfile
+  
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:latest
+    container_name: sql-server
+    environment:
+      ACCEPT_EULA: 'Y'
+      SA_PASSWORD: 'MedicinePassword1234'
+    ports:
+      - 1433:1433
