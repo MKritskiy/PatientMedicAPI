@@ -22,7 +22,7 @@ namespace PatientMedicAPI.DAL
             if (patient != null)
             {
                 context.Patients.Remove(patient);
-                await context.SaveChangesAsync();  // Удаляем пациента и сохраняем изменения
+                await context.SaveChangesAsync(); 
             }
         }
 

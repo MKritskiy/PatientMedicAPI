@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: PatientMedicAPI/Dockerfile
+    ports:
+      - 12345:80
   
   sql-server:
     image: mcr.microsoft.com/mssql/server:latest

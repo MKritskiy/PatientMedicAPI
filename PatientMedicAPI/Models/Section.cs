@@ -6,5 +6,6 @@
         public int SectionNumber { get; set; }
 
         public List<Patient> patients { get; set; } = null!;
+        public List<Medic> medics { get; set; } = null!;
     }
 }

@@ -22,7 +22,7 @@ namespace PatientMedicAPI.DAL
             if (medic != null)
             {
                 context.Medics.Remove(medic);
-                await context.SaveChangesAsync();  // Удаляем пациента и сохраняем изменения
+                await context.SaveChangesAsync(); 
             }
         }
 
@@ -40,40 +40,34 @@ namespace PatientMedicAPI.DAL
         {
             using var context = new MedicineContext();
 
-            IQueryable<Medic> query = context.Medics.Include(p => p.Section);
+            IQueryable<Medic> query = context.Medics.Include(m => m.Section).Include(m=>m.Cabinet).Include(m=>m.Specialization);
 
             switch (sortField?.ToLower())
             {
-                case "patientlastname":
-                    query = ascending ? query.OrderBy(p => p.PatientLastName) : query.OrderByDescending(p => p.PatientLastName);
+                case "medicfullname":
+                    query = ascending ? query.OrderBy(p => p.MedicFullname) : query.OrderByDescending(p => p.MedicFullname);
                     break;
-                case "patientfirstname":
-                    query = ascending ? query.OrderBy(p => p.PatientFirstName) : query.OrderByDescending(p => p.PatientFirstName);
+                case "cabinetnumber":
+                    query = ascending ? query.OrderBy(p => p.Cabinet.CabinetNumber) : query.OrderByDescending(p => p.Cabinet.CabinetNumber);
                     break;
-                case "patientpatronymic":
-                    query = ascending ? query.OrderBy(p => p.PatientPatronymic) : query.OrderByDescending(p => p.PatientPatronymic);
-                    break;
-                case "patientbirthday":
-                    query = ascending ? query.OrderBy(p => p.PatientBirthday) : query.OrderByDescending(p => p.PatientBirthday);
-                    break;
-                case "patientgender":
-                    query = ascending ? query.OrderBy(p => p.PatientGender) : query.OrderByDescending(p => p.PatientGender);
+                case "specializationname":
+                    query = ascending ? query.OrderBy(p => p.Specialization.SpecializationName) : query.OrderByDescending(p => p.Specialization.SpecializationName);
                     break;
                 case "sectionnumber":
                     query = ascending ? query.OrderBy(p => p.Section.SectionNumber) : query.OrderByDescending(p => p.Section.SectionNumber);
                     break;
                 default:
-                    query = ascending ? query.OrderBy(p => p.PatientId) : query.OrderByDescending(p => p.PatientId);
+                    query = ascending ? query.OrderBy(p => p.MedicId) : query.OrderByDescending(p => p.MedicId);
                     break;
             }
             
             return query.ToPagedList(page, pageSize);
         }
 
-        public async Task<int> Update(Patient patient)
+        public async Task<int> Update(Medic medic)
         {
             var context = new MedicineContext();
-            context.Patients.Update(patient);
+            context.Medics.Update(medic);
             return await context.SaveChangesAsync();
         }
     }

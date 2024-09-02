@@ -1,5 +1,4 @@
-﻿using PatientMedicAPI.Dto.Patient;
-using PatientMedicAPI.Models;
+﻿using PatientMedicAPI.Models;
 
 namespace PatientMedicAPI.DAL
 {

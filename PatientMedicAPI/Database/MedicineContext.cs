@@ -1,21 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using PatientMedicAPI.Models;
 
 namespace PatientMedicAPI.Database
 {
     public class MedicineContext : DbContext
     {
+        public static string? ConnectionString { get; set; } = null;
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Cabinet> Cabinets { get; set; }
         public DbSet<Medic> Medics { get; set; }
         public DbSet<Section> Sections { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
+
+        public MedicineContext(DbContextOptions<MedicineContext> options) : base(options)
+        {
+            Database.EnsureCreated();
+        }
         public MedicineContext()
         {
-            //Database.EnsureDeleted();
             Database.EnsureCreated();
-
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,18 +67,27 @@ namespace PatientMedicAPI.Database
                     PatientGender = "Female",
                     SectionId = 2
                 }
+
             );
 
             base.OnModelCreating(modelBuilder);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .Build();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("ConnectionString"));
-                       
+            if (ConnectionString==null)
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .Build();
+                ConnectionString = configuration.GetConnectionString("ConnectionString");
+                optionsBuilder.UseSqlServer(ConnectionString);
+            }
+            else
+            {
+                optionsBuilder.UseSqlServer(ConnectionString);
+            }
+
         }
     }
 }
